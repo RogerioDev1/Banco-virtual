@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Banco Digital</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                        url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+            background-size: cover;
+            color: var(--dark);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .clock {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .balance-card {
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+        
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--success);
+            margin: 1rem 0;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .balance-label {
+            color: var(--dark);
+            opacity: 0.7;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .last-update {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 1rem;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: space-around;
+            padding: 1.5rem;
+            background: rgba(248, 249, 250, 0.7);
+            border-top: 1px solid rgba(238, 238, 238, 0.5);
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5649d6;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: rgba(108, 92, 231, 0.1);
+        }
+        
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            color: #636e72;
+            font-size: 0.9rem;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+                background-attachment: fixed;
+            }
+            
+            .balance-amount {
+                font-size: 2.2rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .clock {
+                position: static;
+                margin-top: 10px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="clock" id="relogio"></div>
+            <h1>Meu Banco Digital</h1>
+            <p>Gerencie suas finanças de forma simples</p>
+        </header>
+        
+        <div class="balance-card">
+            <div class="balance-label">Saldo disponível</div>
+            <div class="balance-amount" id="saldo">R$ 0,00</div>
+            <div class="last-update">Atualizado em <span id="data-atual"></span></div>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+                </svg>
+                Transferir
+            </button>
+            <button class="btn btn-outline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                Extrato
+            </button>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Banco Digital &copy; <span id="ano-atual"></span> - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        // Simula um saldo (pode ser substituído por um valor real)
+        const saldo = 3428.90;
+        
+        // Função para atualizar data e hora
+        function atualizarRelogio() {
+            const agora = new Date();
+            
+            // Formata a data completa
+            const optionsData = { 
+                day: '2-digit', 
+                month: 'long', 
+                year: 'numeric'
+            };
+            const dataFormatada = agora.toLocaleDateString('pt-BR', optionsData);
+            
+            // Formata a hora
+            const optionsHora = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            const horaFormatada = agora.toLocaleTimeString('pt-BR', optionsHora);
+            
+            // Atualiza os elementos
+            document.getElementById('data-atual').textContent = `${dataFormatada} às ${horaFormatada}`;
+            document.getElementById('relogio').textContent = horaFormatada;
+        }
+        
+        // Atualiza o ano no footer
+        document.getElementById('ano-atual').textContent = new Date().getFullYear();
+        
+        // Atualiza a página com os dados
+        document.getElementById('saldo').textContent = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+        
+        // Atualiza o relógio imediatamente e a cada segundo
+        atualizarRelogio();
+        setInterval(atualizarRelogio, 1000);
+        
+        // Efeito de carregamento (opcional)
+        setTimeout(() => {
+            document.querySelector('.container').style.opacity = 1;
+        }, 300);
+    </script>
+</body>
+</html>
